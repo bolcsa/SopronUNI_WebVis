@@ -8,3 +8,4 @@ datasources:
       storage: local
       delimiter: ","  # Az elválasztó karakter beállítása
       header: true  # Ha az első sor fejléc
+    uid: adozg7ot1wpvke
