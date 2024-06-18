@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"                                                                                                     # A host 3000-es portját a konténer 3000-es portjára irányítja
+    volumes:
+      - grafana_data:/var/lib/grafana                                                                                   # Tartós adat tárolása
+      - C:\Users\bolcsa\Documents\suli\webvis\final\megosztottmappa:/transfer                                           # Host könyvtár megosztása, ahol a CSV fájl található
+      - C:\Users\bolcsa\Documents\suli\webvis\final\dashboardvaros.json:/var/lib/grafana/dashboards/dashboardvaros.json # Dashboard JSON fájl megosztása
+      - ./grafana-provisioning:/etc/grafana/provisioning                                                                # Provisioning konfiguráció megosztása (ide kerül a datasource.yaml)
+      - ./refresh.sh:/usr/local/bin/refresh.sh                                                                          # Hozzáadjuk a frissítési scriptet a konténerhez
+    environment:
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+      - GF_PATHS_DATA=/var/lib/grafana
+      - GF_PATHS_HOME=/usr/share/grafana
+      - GF_PATHS_LOGS=/var/log/grafana
+      - GF_PATHS_PLUGINS=/var/lib/grafana/plugins
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_PLUGIN_ALLOW_LOCAL_MODE=true                                                                                 # Helyi mód engedélyezése a pluginok számára
+      - GF_INSTALL_PLUGINS=marcusolsson-csv-datasource                                                                  # A CSV plugin telepítése
+    entrypoint: /bin/bash -c "/usr/local/bin/refresh.sh; /run.sh"                                                       # Futtatjuk a frissítési scriptet induláskor
+
+  myservice:
+    build:
+      context: .
+      dockerfile: Dockerfile                                                                                            # A helyi Dockerfile alapján építi a képet
+    volumes:
+      - C:\Users\bolcsa\Documents\suli\webvis\final\megosztottmappa:/transfer                                           # Host könyvtár megosztása
+    command: sh -c "while :; do sleep 1; done"                                                                          # Tartsa futva a szolgáltatást
+
+volumes:
+  grafana_data:                                                                                                         # Tartós kötet a Grafana számára
