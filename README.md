@@ -1,12 +1,10 @@
-# SopronUNI_WebVis
-
-[Bevezetés]
+# Bevezetés
     A feladat célja, hogy egy olyan projektet hozzak létre, ami segítségével .csv adatokat tudjunk vizualizálni webes felületen.
     Erre a választáso a Grafana eszközre esett.
-
     A Grafana eszközt egy Docker konténerben futtato majd.
 
-[Adatforrás]
+# Adatforrás
+    Az adatforrás a /megosztottmappa könyvtárban található.
     Egy csv file, ami egy város légszennyezési adatait tartamlazza.
     Részlet az adatokból:
     datetime,indicator_name,indicator_dimension,value
@@ -16,18 +14,16 @@
     2024-06-02 17:00:00,NO₂,ppm,0.2463
     2024-06-02 17:00:00,CO,ppm,0.007
 
-    Az adatforrás a /megosztottmappa könyvtárban található.
+# Konténer
 
-[Konténer]
-
-    Dockerfile
+## Dockerfile
     - egy Grafana alapú Docker image-et hoznak létre
     - ebben az image-ben telepítek egy specifikus Grafana plugin-t (marcusolsson-csv-datasource)
 
-    docker-compose.yml
+## docker-compose.yml
     -  két szolgáltatást (service) határoz meg: grafana és myservice
 
-    grafana szolgáltatás:
+### grafana szolgáltatás:
     - image: grafana/grafana:latest: A hivatalos Grafana Docker image legújabb verzióját használja.
     - ports: A host gép 3000-es portját a konténer 3000-es portjára irányítja, így a Grafana elérhető lesz a host gépen a http://localhost:3000 címen.
     - volumes: Több kötetet definiál:
@@ -47,7 +43,7 @@
         - GF_INSTALL_PLUGINS: A telepítendő pluginok listája, itt a marcusolsson-csv-datasource plugin.
     - entrypoint: Beállítja a belépési pontot, hogy induláskor futtassa a refresh.sh scriptet, majd indítsa el a Grafana alapértelmezett futtatási parancsát (/run.sh).
 
-    myservice szolgáltatás:
+### myservice szolgáltatás:
     - build: Megadja az építési kontextust és a Dockerfile helyét:
         - context: .: Az aktuális könyvtárat használja építési kontextusként.
         - dockerfile: Dockerfile: Meghatározza a Dockerfile fájl nevét, amely alapján az image épül.
@@ -59,14 +55,9 @@
     volumes:
     - Definiál egy tartós kötetet (grafana_data), amelyet a grafana szolgáltatás használ a Grafana adatok tárolására
 
-[Dashborard]
+# Dashborard
 Egy előre definiált dashboardot hasznlál a rendszer, melyet előre elkészítettem, és betöltésre kerül.
 
-Kép a már definált és futó DB-ról: pictures\grafana-kepernyő.png
-
-
-
-
-
+![Kép a már definált és futó DB-ról](https://github.com/bolcsa/SopronUNI_WebVis/blob/f1a39cd402b080fcb81752e6c22d7984600a108b/pictures/grafana-keperny%C5%91.png)
 
 
